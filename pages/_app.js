@@ -1,7 +1,10 @@
 import App , { Container} from 'next/app';
 import 'antd/dist/antd.css';
 import Layout from '../components/Layout';
-import MyContext from '../lib/my-context'
+import MyContext from '../lib/my-context';
+import { Provider } from 'react-redux';
+import store from '../store/store';
+import testHoc from '../lib/test-hoc';
 
 class MyApp extends App {
     //重写了getInitialProps方法，来执行组件的方法
@@ -19,13 +22,15 @@ class MyApp extends App {
         return(
             <Container>
                 <Layout>
-                    <MyContext.Provider value="test">
-                        <Component {...pageProps}/>
-                    </MyContext.Provider>
+                    <Provider store={store}>
+                        <MyContext.Provider value="test">
+                            <Component {...pageProps}/>
+                        </MyContext.Provider>
+                    </Provider>
                 </Layout>
                 
             </Container>
         );
     }
 }
-export default MyApp
+export default testHoc(MyApp)
