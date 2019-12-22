@@ -13,6 +13,13 @@ const userInitialState = {
     name: "Jason"
 }
 
+export function add(num) {
+    return ({
+        type: ADD,
+        num: num
+    })
+}
+
 function addAsync(num) {
     return (dispatch) => {
         setTimeout(() => {
@@ -76,4 +83,15 @@ store.dispatch({
     name: "JAck"
 })
 
-export default store
+export default function initializeStore(state) {
+    const store = createStore(
+        allReducers,
+        Object.assign({}, {
+            count: initialState,
+            user: userInitialState
+        }, state),
+        applyMiddleware(ReduxThunk)
+    );
+
+    return store;
+}

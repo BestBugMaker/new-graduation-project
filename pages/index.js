@@ -3,6 +3,7 @@ import Link from 'next/link';//页面跳转
 import Router from 'next/router';
 import store from '../store/store'
 import {connect} from 'react-redux'
+import {add} from '../store/store'
 
 const Index =  ({count,user,rename,add}) => {
   function click() {
@@ -21,6 +22,11 @@ const Index =  ({count,user,rename,add}) => {
       <button onClick={() => add(count)} >Add</button>
     </div>
   )
+}
+
+Index.getInitialProps = async ({ reduxStore }) => {
+  reduxStore.dispatch(add(3))
+  return {}
 }
 
 export default connect(function mapState2Props(state) {
