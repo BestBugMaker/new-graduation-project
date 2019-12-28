@@ -4,6 +4,11 @@ import Router from 'next/router';
 import store from '../store/store'
 import {connect} from 'react-redux'
 import {add} from '../store/store'
+import getConfig from 'next/config'
+import {useEffect} from 'react'
+import axios from 'axios'
+
+const {publicRuntimeConfig} = getConfig()
 
 const Index =  ({count,user,rename,add}) => {
   function click() {
@@ -14,12 +19,16 @@ const Index =  ({count,user,rename,add}) => {
       }
     }, "/a/4");
   }
+  useEffect(() => {
+    axios.get('/api/user/info').then(resp => console.log(resp))
+  },[])
   return(
     <div>
       <span>Count: {count}</span>
       <span>name:{user}</span>
       <input value={user} onChange={(e) => {rename(e.target.value)}} />
       <button onClick={() => add(count)} >Add</button>
+      <a href={publicRuntimeConfig.OAUTH_URL} > LOG IN!! </a>
     </div>
   )
 }

@@ -6,6 +6,8 @@ const Redis = require('ioredis')
 
 const RedisSessionStore = require('./server/session-store')
 
+const auth = require('./server/auth')
+
 const dev = process.env.NODE_ENV != 'production'
 const app = next({
     dev
@@ -31,26 +33,9 @@ app.prepare().then(() => {
     }
 
     server.use(session(SESSION_CONFIG, server))
+        //配置处理github OAuth登陆
+    auth(server)
 
-    server.use(async(ctx, next) => {
-        // console.log(ctx.cookies.get('id'))
-        // //获取用户数据
-        // //比如调用model.getUserById(id)
-
-        // ctx.session = ctx.session || {}
-        // ctx.session.user = {
-        //     username:"jack"
-        // }
-        // if (!ctx.session.user) {
-        //     ctx.session.user = {
-        //         name: "Jason",
-        //         age: 18
-        //     }
-        // } else {
-        console.log("session is " + ctx.session)
-            // }
-        await next()
-    })
     router.get('/a/:id', async(ctx) => { //处理 /a/1 的路由映射问题
         const id = ctx.params.id;
         console.log(id)
@@ -63,17 +48,25 @@ app.prepare().then(() => {
         ctx.respond = false;
     })
 
-    router.get("/set/user", async(ctx) => {
-        ctx.session.user = {
-                name: "Jason",
-                age: 18
-            }
-            // ctx.respond = false;
-        ctx.body = "set session success"
-    })
-    router.get("/delete/user", async(ctx) => {
-        ctx.session = null
-        ctx.body = "delete session success"
+    router.get('/api/user/info', async(ctx) => {
+        // const id = ctx.params.id;
+        // console.log(id)
+        // await handle(ctx.req, ctx.res, {
+        //     pathname: '/a',
+        //     query: {
+        //         id
+        //     }
+        // });
+        // ctx.respond = false;
+        const user = ctx.session.userInfo
+        if (!user) {
+            ctx.status = 401
+            ctx.body = "need login"
+        } else {
+            ctx.body = user
+                //设置headers
+            ctx.set("Content-Type", "application/json")
+        }
     })
     server.use(router.routes()); //启动路由
     // const router = new Router();
