@@ -90,6 +90,7 @@ app.prepare().then(() => {
     //中间件
     server.use(async(ctx, next) => {
         // ctx.cookies.set('id', "userId:xxxxxx")
+        ctx.req.session = ctx.session
         await handle(ctx.req, ctx.res);
         ctx.respond = false;
     })
