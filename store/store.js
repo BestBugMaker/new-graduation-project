@@ -36,11 +36,6 @@ store.subscribe(() => {
     console.log("!!!", store.getState())
 })
 
-store.dispatch({
-    type: UPDATE_USERNAME,
-    name: "JAck"
-})
-
 //action creators
 export function logout() {
     return dispatch => {

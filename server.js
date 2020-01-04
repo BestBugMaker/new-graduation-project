@@ -7,6 +7,7 @@ const Redis = require('ioredis')
 const RedisSessionStore = require('./server/session-store')
 
 const auth = require('./server/auth')
+const api = require('./server/api')
 
 const dev = process.env.NODE_ENV != 'production'
 const app = next({
@@ -35,6 +36,8 @@ app.prepare().then(() => {
     server.use(session(SESSION_CONFIG, server))
         //配置处理github OAuth登陆
     auth(server)
+        //github代理（代理发送github请求）
+    api(server)
 
     router.get('/a/:id', async(ctx) => { //处理 /a/1 的路由映射问题
         const id = ctx.params.id;

@@ -24,12 +24,15 @@ const footerStyle = {
 }
 
 function MyLayout ({ children, user, logout, router }) {
+  const urlQuery = router.query && router.query.query
 
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(urlQuery || '')
   const handleSearchChange = useCallback((event) => {
     setSearch(event.target.value)
   }, [setSearch])
-  const handleOnSearch = useCallback(() => {}, [])
+  const handleOnSearch = useCallback(() => {
+    Router.push(`/search?query=${search}`)
+  }, [search])
   const handleLogout = useCallback(() => {
     logout()
   }, [logout])
@@ -54,6 +57,8 @@ function MyLayout ({ children, user, logout, router }) {
       </Menu.Item>
     </Menu>
   )
+
+  
   return (
     <Layout>
       <Header>
@@ -61,7 +66,9 @@ function MyLayout ({ children, user, logout, router }) {
         
           <div className="header-left">
             <div className="logo">
-              <Icon type="github" style={iconStyle} />
+              <Link href="/" >
+                <Icon type="github" style={iconStyle} />
+              </Link>
             </div>
             <div>
               <Input.Search placeholder="搜索仓库" value={search} onChange={handleSearchChange} onSearch={handleOnSearch} />
@@ -112,11 +119,14 @@ function MyLayout ({ children, user, logout, router }) {
       height: 100%;
     }
     .ant-layout {
-      height: 100%;
+      min-height: 100%;
     }
     .ant-layout-header {
       padding-left: 0;
       padding-right: 0;
+    }
+    .ant-layout-content {
+      background-color: #ffffff;
     }
   `}</style>
     </Layout>
