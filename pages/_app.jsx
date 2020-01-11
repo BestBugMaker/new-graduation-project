@@ -63,12 +63,6 @@ class MyApp extends App {
                         null
                     }
                     <Layout>
-                        <Link href="/">
-                            <a>index</a>
-                        </Link>
-                        <Link href="/detail">
-                            <a>detail</a>
-                        </Link>
                         <Component {...pageProps}/>
                     </Layout>
                 </Provider>
