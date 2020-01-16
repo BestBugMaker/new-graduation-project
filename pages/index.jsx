@@ -120,10 +120,6 @@ function Index ({ userRepos, userStarredRepos, user, router }) {
 
 
 Index.getInitialProps = async ({ ctx, reduxStore }) => {
-    // const result = await axios.get("/github/search/repositories?q=react").then(resp => {
-    //     console.log(resp)
-    // })
-
     //若未登陆，则不调用接口
     const user = reduxStore.getState().user
     if(!user || !user.id){

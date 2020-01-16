@@ -55,15 +55,6 @@ app.prepare().then(() => {
     })
 
     router.get('/api/user/info', async(ctx) => {
-        // const id = ctx.params.id;
-        // console.log(id)
-        // await handle(ctx.req, ctx.res, {
-        //     pathname: '/a',
-        //     query: {
-        //         id
-        //     }
-        // });
-        // ctx.respond = false;
         const user = ctx.session.userInfo
         if (!user) {
             ctx.status = 401
@@ -75,24 +66,6 @@ app.prepare().then(() => {
         }
     })
     server.use(router.routes()); //启动路由
-    // const router = new Router();
-    // router.get('/test', (ctx) => {
-    //         ctx.body = '<p>request /test</p>'
-    //     })
-    //ctx: 请求的内容
-    // server.use(async(ctx, next) => {
-    //     // const path = ctx.path
-    //     // const method = ctx.method
-    //     // ctx.body = `<span>Koa Render ${path} ${method}</span>`
-    //     //执行下一个中间件
-    //     await next()
-    // })
-
-    // server.use(router.routes());
-
-    // server.use(async(ctx, next) => {
-    //         ctx.body = '<span>Koa Render2</span>'
-    //     })
     //中间件
     server.use(async(ctx, next) => {
         // ctx.cookies.set('id', "userId:xxxxxx")

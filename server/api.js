@@ -10,7 +10,6 @@ module.exports = server => {
             const path = ctx.path
             const method = ctx.method
             if (path.startsWith('/github/')) {
-                console.log(ctx.request.body)
                 const session = ctx.session
                 const githubAuth = session && session.githubAuth || {}
                 const headers = {}
