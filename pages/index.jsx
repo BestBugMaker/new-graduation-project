@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import Repo from '../components/Repo'
 import Router, { withRouter } from 'next/router'
 import LRU from 'lru-cache'
+import { cacheArray } from '../lib/repo-basic-cache'
 
 //LRU缓存策略，每使用一次数据，就会更新数据的缓存时间
 // const cache = new LRU({
@@ -17,7 +18,7 @@ const api = require('../lib/api')
 let cachedUserRepos, cachedUserStarredRepos
 const isServer = typeof window === 'undefined'
 
-function Index ({ userRepos, userStarredRepos, user, router }) {
+function Index ({ userRepos, userStarredRepos, user, router, isLogin }) {
     console.log(userRepos, userStarredRepos, user)
 
     const tableKey = router.query.key || '1'
@@ -43,20 +44,29 @@ function Index ({ userRepos, userStarredRepos, user, router }) {
         }
     },[userRepos, userStarredRepos])
 
+    useEffect(() => {
+        if(!isServer && userRepos && userStarredRepos) {
+            cacheArray(userRepos)
+            cacheArray(userStarredRepos)
+        }
+    })
+
     if(!user || !user.id) {
-        return <div className="root" >
-            <p>请先登陆欧～</p>
-            <Button type="primary" href={publicRuntimeConfig.OAUTH_URL} >点击登录</Button>
-            <style jsx>{`
-                .root {
-                    height: 400px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                }
-                `}</style>
-        </div>
+        return (
+            <div className="root" >
+                <p>请先登陆欧～</p>
+                <Button type="primary" href={publicRuntimeConfig.OAUTH_URL} >点击登录</Button>
+                <style jsx>{`
+                    .root {
+                        height: 400px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                    `}</style>
+            </div>
+        )
     }
 
     return (
@@ -147,7 +157,6 @@ Index.getInitialProps = async ({ ctx, reduxStore }) => {
     const userRepos = await api.request({url: '/user/repos'},ctx.req, ctx.res)
 
     const userStarredRepos = await api.request({url: '/user/starred'}, ctx.req, ctx.res)
-
 
     return {
         isLogin: true,

@@ -1,7 +1,10 @@
 import { withRouter } from 'next/router'
-import { Row, Col, List } from 'antd'
+import { Row, Col, List, Pagination } from 'antd'
 import Link from "next/link"
 import Router from 'next/router'
+import { memo, isValidElement, useEffect } from 'react'
+import Repo from '../components/Repo'
+import { cacheArray } from '../lib/repo-basic-cache'
 
 const api = require('../lib/api')
 
@@ -38,35 +41,51 @@ const SORT_TYPES = [
  * page: 分页
  */
 
- const selectedItemStyle = {
-     borderLeft: '2px solid #e36209',
-     fontWeight: 100
- }
+const selectedItemStyle = {
+    borderLeft: '2px solid #e36209',
+    fontWeight: 100
+}
+
+//分页组件必须的onchange方法
+function noop() {}
+const per_page = 20
+
+const isServer = typeof window === 'undefined'
+
+const FilterLink = memo(({name, query, lang, sort, order, page}) => {
+
+    let queryString = `?query=${query}`
+    if(lang) {
+        queryString += `&lang=${lang}`
+    }
+    if(sort) {
+        queryString += `&sort=${sort}&order=${order || 'desc'}`
+    }
+    if(page) {
+        queryString += `&page=${page}`
+    }
+    queryString += `&per_page=${per_page}`
+    return (
+        //antd的page是一个react组件，所以要对侧边的搜索条件和分页按钮做不同的判断
+        <Link href={`/search${queryString}`}>
+            {
+                isValidElement(name)? 
+                name: 
+                <a>{name}</a>
+            }
+        </Link> 
+    )
+})
 
 function Search({ router, repos }) {
 
-    const {sort, order, lang, query} = router.query
+    const { ...querys } = router.query
+    const { lang, sort, order, page } = router.query
 
-    const handleLanguageChange = (language) => {
-        Router.push({
-            pathname: '/search',
-            query: {
-                query,
-                lang: language,
-                sort,
-                order
-            }
-        })
-    }
-    const handleSortChange = (sort) => {
-        Router.push({
-            pathname: '/search',
-            query: {
-                query,
-                lang,
-                sort: sort.value,
-                order: sort.order
-            }
+    if(!isServer) {
+        useEffect(() => {
+            //用于缓存仓库的概要
+            cacheArray(repos.items)
         })
     }
 
@@ -79,7 +98,11 @@ function Search({ router, repos }) {
                             const selected = lang === item
                             return (
                                 <List.Item style={selected? selectedItemStyle: null}>
-                                    <a onClick={() => handleLanguageChange(item)}>{ item }</a>
+                                    {
+                                        selected? 
+                                        <span> {item} </span>:
+                                        <FilterLink {...querys} lang={item} name={item}/>
+                                    }                                    
                                 </List.Item>
                             )
                         }} 
@@ -94,12 +117,53 @@ function Search({ router, repos }) {
                             }
                             return (
                                 <List.Item style={selected? selectedItemStyle: null}>
-                                    <a onClick={() => handleSortChange(item)}>{ item.name }</a>
+                                    {
+                                        selected? <span> {item.name} </span>: 
+                                        <FilterLink  {...querys} sort={item.value} order={item.order} name={item.name} />
+                                    }
                                 </List.Item>
                             )
                         }} />
                 </Col>
+                <Col span={18} >
+                    <h3 className="repos-title">{ repos.total_count } 个仓库</h3>
+                    {
+                        repos.items.map(repo => <Repo repo={repo} key={repo.id} />)
+                    }
+                    <div className="pagination" >
+                        <Pagination 
+                            pageSize={per_page}
+                            current={Number(page) || 1}
+                            total={repos.total_count}
+                            onChange={noop}
+                            total={1000} //因为github的api对于每个搜索条件只会返回前1000条结果
+                            itemRender={(page, type, ol) => {
+                                const p = type === 'page'? page: type === 'prev'? page - 1: page + 1
+                                const name = type === 'page'? page: ol
+                                return <FilterLink {...querys} page={p} name={name} />
+                            }}
+                        />
+                    </div>
+                </Col>
             </Row>
+                <style jsx>{`
+                    .root {
+                        padding: 20px 0;
+                    }
+                    .list-header {
+                        font-weight: 800;
+                        font-size: 16px;
+                    }
+                    .repos-title {
+                        border-bottom: 1px solid #eee;
+                        font-size: 24px;
+                        line-height: 50px;
+                    }
+                    .pagination {
+                        padding: 20px;
+                        text-align: center;
+                    }
+                `}</style>
         </div>
     )
 }
@@ -124,6 +188,7 @@ Search.getInitialProps = async ({ ctx }) => {
     if(page) {
         queryString += `&page=${page}`
     }
+    queryString += `&per_page=${per_page}`
 
     const result = await api.request({
         url: `/search/repositories${queryString}`

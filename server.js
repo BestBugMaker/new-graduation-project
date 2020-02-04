@@ -9,6 +9,9 @@ const RedisSessionStore = require('./server/session-store')
 
 const auth = require('./server/auth')
 const api = require('./server/api')
+const atob = require('atob')
+
+
 
 const dev = process.env.NODE_ENV != 'production'
 const app = next({
@@ -23,6 +26,9 @@ const redis = new Redis({
     host: '127.0.0.1',
     password: 'ad12346224'
 });
+
+//设置nodejs全局增加atob方法
+global.atob = atob
 
 app.prepare().then(() => {
     const server = new Koa();
