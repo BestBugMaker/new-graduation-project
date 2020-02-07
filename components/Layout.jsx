@@ -35,6 +35,8 @@ function MyLayout ({ children, user, logout, router }) {
   }, [search])
   const handleLogout = useCallback(() => {
     logout()
+    //不加这个就不会跳回首页
+    Router.push('/')
   }, [logout])
   const handleGoToOAuth = useCallback((e) => {
     e.preventDefault()
