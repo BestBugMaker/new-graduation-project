@@ -29,8 +29,8 @@ module.exports = (server) => {
                 }
             })
 
-            console.log(result.status, result.data)
-                //github token请求失败时http code也是200
+            // console.log(result.status, result.data)
+            //github token请求失败时http code也是200
             if (result.status == 200 && (result.data && !result.data.error)) {
                 ctx.session.githubAuth = result.data
                 const {

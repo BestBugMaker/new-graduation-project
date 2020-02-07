@@ -19,7 +19,6 @@ let cachedUserRepos, cachedUserStarredRepos
 const isServer = typeof window === 'undefined'
 
 function Index ({ userRepos, userStarredRepos, user, router, isLogin }) {
-    console.log(userRepos, userStarredRepos, user)
 
     const tableKey = router.query.key || '1'
     const handleTabChange = (activeKey) => {

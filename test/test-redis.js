@@ -14,7 +14,6 @@ async function test() {
      * redis.setex()
      */
     const keys = await redis.keys('*');
-    console.log(keys);
 }
 
 test();

@@ -50,7 +50,6 @@ app.prepare().then(() => {
 
     router.get('/a/:id', async(ctx) => { //处理 /a/1 的路由映射问题
         const id = ctx.params.id;
-        console.log(id)
         await handle(ctx.req, ctx.res, {
             pathname: '/a',
             query: {
