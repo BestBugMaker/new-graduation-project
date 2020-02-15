@@ -1,11 +1,16 @@
 import {useEffect} from 'react'
-import { Button, Icon, Tabs } from 'antd'
+import { Button, Icon, Tabs, Carousel } from 'antd'
 import getConfig from 'next/config'
 import {connect} from 'react-redux'
 import Repo from '../components/Repo'
 import Router, { withRouter } from 'next/router'
 import LRU from 'lru-cache'
 import { cacheArray } from '../lib/repo-basic-cache'
+import img1 from '../assets/1.jpg'
+import img2 from '../assets/2.jpg'
+import img3 from '../assets/3.jpg'
+import img4 from '../assets/4.jpg'
+
 
 //LRU缓存策略，每使用一次数据，就会更新数据的缓存时间
 // const cache = new LRU({
@@ -44,7 +49,7 @@ function Index ({ userRepos, userStarredRepos, user, router, isLogin }) {
     },[userRepos, userStarredRepos])
 
     useEffect(() => {
-        if(!isServer && userRepos && userStarredRepos) {
+        if(!isServer) {
             cacheArray(userRepos)
             cacheArray(userStarredRepos)
         }
@@ -52,18 +57,43 @@ function Index ({ userRepos, userStarredRepos, user, router, isLogin }) {
 
     if(!user || !user.id) {
         return (
-            <div className="root" >
-                <p>请先登陆欧～</p>
-                <Button type="primary" href={publicRuntimeConfig.OAUTH_URL} >点击登录</Button>
+            <div>
+                <div className="pic-tabs">
+                    <Carousel autoplay autoplaySpeed={2500}>
+                        <div>
+                            <img src={img1} className="pic" />
+                        </div>
+                        <div>
+                            <img src={img2} className="pic" />
+                        </div>
+                        <div>
+                            <img src={img3} className="pic" />
+                        </div>
+                        <div>
+                            <img src={img4} className="pic" />
+                        </div>
+                    </Carousel>
+                </div>
+                <div className="root">
+                    <p>请先登陆欧～</p>
+                    <Button type="primary" href={publicRuntimeConfig.OAUTH_URL} >点击登录</Button>
+                </div>
                 <style jsx>{`
                     .root {
-                        height: 400px;
+                        height: 100px;
                         display: flex;
                         flex-direction: column;
                         justify-content: center;
                         align-items: center;
                     }
-                    `}</style>
+                    .pic-tabs {
+                        margin-top: 40px;
+                    }
+                    .pic {
+                        width: 70%;
+                        margin: 0 auto;
+                    }
+                `}</style>
             </div>
         )
     }

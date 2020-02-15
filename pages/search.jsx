@@ -8,7 +8,7 @@ import { cacheArray } from '../lib/repo-basic-cache'
 
 const api = require('../lib/api')
 
-const LANGUAGES = ["JavaScript", "HTML", "CSS", "TypeScript", "Java", "Python"]
+const LANGUAGES = ["JavaScript", "HTML", "CSS", "TypeScript", "Java", "Python", "Rust", "R", "Kotlin", "Scala"]
 const SORT_TYPES = [
     {
         name: "Best Match"
@@ -34,12 +34,6 @@ const SORT_TYPES = [
         order: "asc"
     },
 ]
-/**
- * sort: 排序方式
- * order: 排序顺序
- * lang: 仓库项目开发主语言
- * page: 分页
- */
 
 const selectedItemStyle = {
     borderLeft: '2px solid #e36209',
@@ -52,6 +46,12 @@ const per_page = 20
 
 const isServer = typeof window === 'undefined'
 
+/**
+ * sort: 排序方式
+ * order: 排序顺序
+ * lang: 仓库项目开发主语言
+ * page: 分页
+ */
 const FilterLink = memo(({name, query, lang, sort, order, page}) => {
 
     let queryString = `?query=${query}`
@@ -88,7 +88,7 @@ function Search({ router, repos }) {
             cacheArray(repos.items)
         })
     }
-
+// src="([^"]*)"
     return (
         <div className="root">
             <Row gutter={20}>
