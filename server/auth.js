@@ -32,20 +32,22 @@ module.exports = (server) => {
             // console.log(result.status, result.data)
             //github token请求失败时http code也是200
             if (result.status == 200 && (result.data && !result.data.error)) {
+                console.log("success")
                 ctx.session.githubAuth = result.data
                 const {
                     access_token,
                     token_type
                 } = result.data
                 const userInfoResp = await axios({
-                        method: "GET",
-                        url: "https://api.github.com/user",
-                        headers: {
-                            "Authorization": `${token_type} ${access_token}`
-                        }
-                    })
-                    // console.log(userInfoResp)
+                    method: "GET",
+                    url: "https://api.github.com/user",
+                    headers: {
+                        "Authorization": `${token_type} ${access_token}`
+                    }
+                })
+                console.log(userInfoResp)
                 ctx.session.userInfo = userInfoResp.data
+                console.log(ctx)
 
                 ctx.redirect((ctx.session && ctx.session.urlBeforeOAuth) ? ctx.session.urlBeforeOAuth : '/')
                 ctx.session.urlBeforeOAuth = ''
