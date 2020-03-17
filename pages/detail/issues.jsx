@@ -5,6 +5,7 @@ import { useState , useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { getLastUpdatedTime } from '../../lib/utils'
 import SearchUser from '../../components/SearchUser'
+import RouterGuard from '../../components/RouterGuard'
 
 const MdRenderer = dynamic(() => import('../../components/mdRenderer'))
 
@@ -216,4 +217,4 @@ Issues.getInitialProps = async ({ ctx }) => {
         labels: fetchs[1].data
     }
 }
-export default withRepoBasic(Issues, 'issues')
+export default RouterGuard(withRepoBasic(Issues, 'issues'))

@@ -97,7 +97,6 @@ function Index ({ userRepos, userStarredRepos, user, router, isLogin }) {
             </div>
         )
     }
-
     return (
         <div className="root">
             <div className="user-info">

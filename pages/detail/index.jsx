@@ -1,7 +1,7 @@
 import withRepoBasic from '../../components/with-repo-basic'
 import api from '../../lib/api'
 import dynamic from 'next/dynamic'
-
+import RouterGuard from '../../components/RouterGuard'
 
 
 const MDRenderer = dynamic(
@@ -24,4 +24,4 @@ Detail.getInitialProps = async ({ ctx: { query: { owner, name }, req, res} }) =>
         readme: readmeResp.data
     }
 }
-export default withRepoBasic(Detail, 'index')
+export default RouterGuard(withRepoBasic(Detail, 'index'))

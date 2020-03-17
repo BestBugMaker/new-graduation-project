@@ -5,6 +5,7 @@ import Router from 'next/router'
 import { memo, isValidElement, useEffect } from 'react'
 import Repo from '../components/Repo'
 import { cacheArray } from '../lib/repo-basic-cache'
+import RouterGuard from '../components/RouterGuard'
 
 const api = require('../lib/api')
 
@@ -78,6 +79,7 @@ const FilterLink = memo(({name, query, lang, sort, order, page}) => {
 })
 
 function Search({ router, repos }) {
+    console.log(repos)
 
     const { ...querys } = router.query
     const { lang, sort, order, page } = router.query
@@ -194,9 +196,10 @@ Search.getInitialProps = async ({ ctx }) => {
     const result = await api.request({
         url: `/search/repositories${queryString}`
     }, ctx.req, ctx.res)
+    console.log("data", result.data)
     return {
         repos: result.data
     }
 }
 
-export default withRouter(Search)
+export default RouterGuard(withRouter(Search))
