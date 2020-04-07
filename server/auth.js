@@ -16,6 +16,7 @@ module.exports = (server) => {
                 cyx.body = "code not exist"
                 return
             }
+            console.log("before Login")
             const result = await axios({
                 method: "POST",
                 url: request_token_url,
@@ -29,8 +30,8 @@ module.exports = (server) => {
                 }
             })
 
-            // console.log(result.status, result.data)
-            //github token请求失败时http code也是200
+            console.log(result.status, result.data)
+                //github token请求失败时http code也是200
             if (result.status == 200 && (result.data && !result.data.error)) {
                 console.log("success")
                 ctx.session.githubAuth = result.data

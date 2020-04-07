@@ -152,8 +152,8 @@ function Issues({ initialIssues, labels, owner, name }) {
                 <SearchUser onChange={handleCreatorChange} value={creator} />
                 <Select placeholder="状态" onChange={handleStateChange} value={state} style={{width: 200, marginLeft: 20}}>
                     <Option value="all">All</Option>
-                    <Option value="all">Open</Option>
-                    <Option value="all">Closed</Option>
+                    <Option value="open">Open</Option>
+                    <Option value="closed">Closed</Option>
                 </Select>
                 <Select placeholder="标签" mode="multiple" onChange={handleLabelChange} value={label} style={{flexGrow: 1, marginLeft: 20, marginRight: 20}}>
                     {
